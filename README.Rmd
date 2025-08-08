@@ -11,25 +11,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-# quarto_beamer_template
+# quarto_beamer_template: A Quarto Template for Beamer Presentations
 
-<!-- badges: start -->
-<!-- badges: end -->
+`beamer_template.qmd` is a [Quarto](https://quarto.org/) template for making presentations with Beamer. The goal of this template is to provide a template that works reasonably well, and pointing out places where the user might make further customization. This solves a few headaches that come with an out-of-the-box Quarto Beamer presentation: hopefully it will not add any new ones.
 
-The goal of quarto_beamer_template is to ...
+Citations are handled with [BibTex](https://www.bibtex.org/) vis the `bibliography.bib` file: you can easily convert a DOI to a bibtex entry with [doi2bib](https://www.doi2bib.org/), and customize how citations are rendered using [CSL](https://citationstyles.org/).
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+`config.yml` contains information on:
 
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub.
+  - The packages from CRAN and GitHub required
+  - The default [chunk options](https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html)
+  - Customizations to a [ggplot2 theme](https://ggplot2.tidyverse.org/reference/theme.html) named `plot_theme`
+  - Color palettes using the [ggsci](https://cran.r-project.org/web/packages/ggsci/index.html) package, including those of The Lancet, NEJM, BMJ, and AAAS.

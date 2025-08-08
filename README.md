@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# quarto_beamer_template
+# quarto_beamer_template: A Quarto Template for Beamer Presentations
 
 `beamer_template.qmd` is a [Quarto](https://quarto.org/) template for
 making presentations with Beamer. The goal of this template is to
