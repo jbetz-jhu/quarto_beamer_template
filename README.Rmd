@@ -23,3 +23,9 @@ Citations are handled with [BibTex](https://www.bibtex.org/) vis the `bibliograp
   - The default [chunk options](https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html)
   - Customizations to a [ggplot2 theme](https://ggplot2.tidyverse.org/reference/theme.html) named `plot_theme`
   - Color palettes using the [ggsci](https://cran.r-project.org/web/packages/ggsci/index.html) package, including those of The Lancet, NEJM, BMJ, and AAAS.
+
+Customizations to the template are done using `beamer_customizations.tex`, including:
+
+  - The contents of the header/footer
+  - The text margins for slides
+  - Adding color to links without also modifying the navigation bar

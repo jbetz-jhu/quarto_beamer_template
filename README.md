@@ -26,3 +26,10 @@ are rendered using [CSL](https://citationstyles.org/).
 - Color palettes using the
   [ggsci](https://cran.r-project.org/web/packages/ggsci/index.html)
   package, including those of The Lancet, NEJM, BMJ, and AAAS.
+
+Customizations to the template are done using
+`beamer_customizations.tex`, including:
+
+- The contents of the header/footer
+- The text margins for slides
+- Adding color to links without also modifying the navigation bar
