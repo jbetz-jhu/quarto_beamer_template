@@ -1,0 +1,46 @@
+default:
+  opts_chunk:
+    collapse: TRUE
+    echo: FALSE
+    message: TRUE
+    error: TRUE
+    purl: FALSE
+    results: "markup"
+    fig_path: "figures/"
+    fig_width: 8
+    fig_height: 8
+    fig_asp: 0.618 # Golden Ratio
+    fig_align: "center"
+    out_height: "80%"
+    dev: "pdf"
+
+  cran_packages:
+    - "devtools"
+    - "dplyr"
+    - "ggplot2"
+    - "ggsci"
+    - "here"
+    - "kableExtra"
+    - "stringr"
+    - "table1"
+    - "tidyr"
+    - "xfun"
+    
+  github_packages:
+    
+  ggplot_parameters:
+    axis_text_size: 22
+    axis_text_face: "plain"
+    axis_title_size: 26
+    axis_title_face: "plain"
+    facet_text_size: 26
+    facet_text_face: "plain"
+    plot_title_size: 30
+    plot_title_face: "bold"
+    legend_text_size: 23
+    legend_text_face: "plain"
+    legend_title_size: 24
+    legend_title_face: "bold"
+    legend_direction: "horizontal"
+    legend_box: "vertical"
+    legend_position: "bottom"

@@ -1,0 +1,443 @@
+---
+title: "Long Title That is Meant Only For The Title Slide"
+
+shorttitle: "A Shorter Title"
+
+subtitle: "A Subtitle for the Presentation"
+
+date: "October 24, 2024"
+
+author:   
+  - name: First Author^1^
+    orcid: 0000-0000-0000-0000
+    email: fauthor@institution.edu
+    affiliations:
+      - name: University of Institution
+        department: Department of Domain
+  - name: Other Author^2^
+    orcid: 0000-0000-0000-0000
+    email: oauthor@other.edu
+    affiliations:
+      - name: Other University
+        department: Department of Affiliation
+        
+institute:
+ - "^1^Department of Domain,\n\nUniversity of Institution School of School\n\nCity, State, Country"
+ - "^2^Department of Affiliation,\n\nOther University\n\nCity, State, Country"
+ 
+format:
+  beamer:
+    colortheme: lily
+    geometry:
+      - left = 10mm
+      - right  = 10mm
+    include-in-header: "beamer_customizations.tex"
+    incremental: FALSE
+    keep-tex: TRUE
+    
+    links-as-notes: true
+    link-citations: true
+    linkcolor: blue
+    
+    navigation: horizontal
+    
+    slide-level: 2
+    theme: Berlin
+    
+    ## Font ##
+    mainfont: Calibri
+    fontsize: 11pt
+  
+bibliography: bibliography.bib
+csl: american-statistical-association.csl
+---
+
+```{r Check-Packages, include = FALSE, echo = FALSE, message = FALSE}
+### NOTE: open beamer_template.Rproj - This sets relative paths! ###############
+report_config <-
+  config::get(
+    config = "examples",
+    file = "config.yml"
+  )
+
+installed_packages <- installed.packages()[, "Package"]
+
+required_packages <-
+  with(
+    data = report_config,
+    c(cran_packages,
+      gsub(
+        pattern = "^[A-Za-z0-9\\_\\.\\-]*/",
+        replacement = "",
+        x = github_packages
+      )
+    )
+  )
+
+missing_packages <-
+  setdiff(
+    x = required_packages,
+    y = installed_packages
+  )
+
+if(length(missing_packages) > 0){
+  stop(
+    "Required packages not installed: ", 
+    paste(missing_packages, collapse = ","), ". ",
+    "See `cran_packages` and `github_packages` in the configuration file."
+  )
+}
+```
+
+
+```{r Report-Setup, include = FALSE, echo = FALSE, message = FALSE}
+### User Parameters ############################################################
+
+
+
+### Libraries ##################################################################
+library(dplyr) # arrange, mutate, rename, ...
+library(ggplot2)
+library(ggsci) # scale_color, scale_fill
+library(kableExtra) # kbl, kable_styling, row_spec, column_spec
+library(labelled) # var_label
+library(table1) # table1
+library(xfun) # file_ext, join_words, numbers_to_words
+
+
+
+
+### Graphic Parameters #########################################################
+color_palette_1 <-
+  ggsci::scale_color_lancet()
+fill_palette_1 <-
+  ggsci::scale_fill_lancet()
+
+color_palette_2 <-
+  ggsci::scale_color_nejm()
+fill_palette_2 <-
+  ggsci::scale_fill_nejm()
+
+color_palette_3 <-
+  ggsci::scale_color_bmj()
+fill_palette_3 <-
+  ggsci::scale_fill_bmj()
+
+color_palette_4 <-
+  ggsci::scale_color_aaas()
+fill_palette_4 <-
+  ggsci::scale_fill_aaas()
+
+with(
+  data = report_config$ggplot_parameters,
+  expr = {
+    assign(
+      x = "plot_theme",
+      value =
+        theme_bw() +
+      theme(
+        axis.text.x = 
+          element_text(
+            size = axis_text_size,
+            face = axis_text_face
+          ),
+        axis.text.y = 
+          element_text(
+            size = axis_text_size,
+            face = axis_text_face
+          ),
+        axis.title = 
+          element_text(
+            size = axis_title_size,
+            face = axis_title_face,
+          ),
+        strip.text =
+          element_text(
+            size = facet_text_size,
+            face = facet_text_face,
+          ),
+        plot.title =
+          element_text(
+            size = plot_title_size,
+            face = plot_title_face
+          ),
+        legend.text =
+          element_text(
+            size = legend_text_size,
+            face = legend_text_face
+          ),
+        legend.title =
+          element_text(
+            size = legend_title_size,
+            face = legend_title_face,
+          ),
+        legend.box = legend_box,
+        legend.direction = legend_direction,
+        legend.position = legend_position
+      ),
+      pos = .GlobalEnv
+    )
+  }
+)
+
+
+
+
+### Chunk Options ##############################################################
+fig_w <- report_config$opts_chunk$fig_width
+fig_h <- report_config$opts_chunk$fig_height
+
+with(
+  data = 
+    report_config$opts_chunk,
+  expr = {
+    knitr::opts_chunk$set(
+      collapse = collapse,
+      echo = echo,
+      message = message,
+      error = error,
+      purl = purl,
+      results = results,
+      fig.path = fig_path,
+      fig.width = fig_width,
+      fig.height = fig_height,
+      fig.align = fig_align,
+      fig.asp = fig_asp,
+      out.height = out_height,
+      dev = dev
+    )
+  }
+)
+```
+
+
+```{r prepare-mtcars}
+mtcars_labelled <-
+  mtcars %>% 
+  dplyr::mutate(
+    vs =
+      factor(
+        x = vs,
+        levels = 0:1,
+        labels = c("0. V-shaped", "1. Straight")
+      ),
+    am =
+      factor(
+        x = am,
+        levels = 0:1,
+        labels = c("0. Automatic", "1. Manual")
+      ),
+    gear =
+      factor(
+        x = gear,
+        levels = 3:5,
+        labels = c("3 Gears", "4 Gears", "5 Gears")
+      )
+  )
+
+labelled::var_label(mtcars_labelled$mpg) <- "Fuel Efficiency: Miles/(US) Gallon"
+labelled::var_label(mtcars_labelled$cyl) <- "Number of Cylinders"
+labelled::var_label(mtcars_labelled$disp) <- "Displacement (in^3)"
+labelled::var_label(mtcars_labelled$hp) <- "Gross Horsepower"
+labelled::var_label(mtcars_labelled$drat) <- "Rear Axle Ratio"
+labelled::var_label(mtcars_labelled$wt) <- "Weight (1000 lbs)"
+labelled::var_label(mtcars_labelled$qsec) <- "1/4 Mile Time (s)"
+labelled::var_label(mtcars_labelled$vs) <- "Engine Type"
+labelled::var_label(mtcars_labelled$am) <- "Transmission"
+labelled::var_label(mtcars_labelled$gear) <- "Forward Gears"
+labelled::var_label(mtcars_labelled$carb) <- "Carburetors"
+```
+
+
+
+
+# Equations and Plots
+
+
+## Example of In-Line and Display Equations
+
+- Content for the first slide
+- In-Line Equation: $E[Y \vert X ] = \beta_{0} + \beta_{x}X$
+
+$$ y_{i} = \beta_{0} + \sum_{j=1}^{p}X_{ij} + \epsilon_{i}$$
+
+
+
+
+## Here's a Table Using `table1::table1()`
+
+```{r mtcars-table}
+# See: https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_pdf.pdf
+table1::table1(
+  x = ~ mpg + disp + hp | vs,
+  data = mtcars_labelled
+) %>% 
+  kableExtra::kbl(
+    format = "latex",
+    ## Set `escape = TRUE` if content includes TeX: Remember to sanitize
+    # escape = FALSE, 
+    align = "c",
+    valign = "b"
+  ) %>%
+  kableExtra::kable_styling(
+    position = "center",
+    latex_options = c("striped")
+  ) %>% 
+  kableExtra::row_spec(
+    row = 1:10,
+    font_size = 7
+  ) %>% 
+  kableExtra::row_spec(
+    row = c(0, 2, 5, 8),
+    bold = TRUE
+  ) %>% 
+  kableExtra::column_spec(
+    column = 1:3,
+    latex_valign = "b",
+  )
+```
+
+
+
+
+## Here's A Plot: Palette 1 - Lancet
+
+```{r mtcars-scatter-mpg-by-wt-palette-1}
+ggplot2::ggplot(
+  data = mtcars_labelled,
+  ggplot2::aes(
+    y = mpg,
+    x = wt,
+    col = vs
+  )
+) +
+  ggplot2::geom_point() +
+  color_palette_1 +
+  plot_theme +
+  ggplot2::labs(
+    x = labelled::var_label(mtcars_labelled$mpg),
+    y = labelled::var_label(mtcars_labelled$wt),
+    color = labelled::var_label(mtcars_labelled$vs)
+  )
+```
+
+
+
+
+## Here's A Plot: Palette 2 - NEJM
+
+```{r mtcars-boxplot-mpg-by-vs-palette-2}
+ggplot2::ggplot(
+  data = mtcars_labelled,
+  ggplot2::aes(
+    y = mpg,
+    x = vs,
+    col = vs
+  )
+) +
+  ggplot2::geom_boxplot(
+    fill = NA
+  ) +
+  ggplot2::geom_violin(
+    fill = NA
+  ) +
+  color_palette_2 +
+  plot_theme +
+  ggplot2::guides(
+    color = "none"
+  ) +
+  ggplot2::labs(
+    y = "Fuel Efficiency (mpg)",
+    x = labelled::var_label(mtcars_labelled$vs)
+  )
+```
+
+
+
+
+## Here's A Plot: Palette 3 - BMJ
+
+```{r mtcars-ecdf-mpg-by-vs-palette-3}
+ggplot2::ggplot(
+  data = mtcars_labelled,
+  ggplot2::aes(
+    x = mpg,
+    col = vs
+  )
+) +
+  ggplot2::stat_ecdf() +
+  color_palette_3 +
+  plot_theme +
+  ggplot2::labs(
+    x = labelled::var_label(mtcars_labelled$mpg),
+    y = "Cumulative Proportion",
+    color = labelled::var_label(mtcars_labelled$vs)
+  )
+```
+
+
+
+## Here's A Plot: Palette 3 - BMJ
+
+```{r mtcars-density-mpg-vs-wt-by-vs-palette-4}
+ggplot2::ggplot(
+  data = mtcars_labelled,
+  ggplot2::aes(
+    y = wt,
+    x = mpg,
+    col = vs
+  )
+) +
+  ggplot2::geom_point() +
+  ggplot2::geom_density2d() +
+  color_palette_4 +
+  plot_theme +
+  ggplot2::labs(
+    x = labelled::var_label(mtcars_labelled$mpg),
+    y = labelled::var_label(mtcars_labelled$wt),
+    color = labelled::var_label(mtcars_labelled$vs)
+  )
+```
+
+
+
+
+# Citations
+
+
+## Bibliography
+
+- The bibliography is created by `bibliography.bib`
+- This is a [bibtex file](https://www.bibtex.org/)
+- If you have an article DOI, convert it to bibtex with [DOI2Bib](https://www.doi2bib.org/)
+- [Citing are easy](https://quarto.org/docs/authoring/citations.html): [@Xie2018RMarkdown]
+- Customize with a [CSL File](https://citationstyles.org/)
+  - [Link to Repository](https://github.com/citation-style-language/styles)
+  - This uses ASA's CSL.
+
+
+
+
+# Incremental
+
+
+## More Content
+
+- This is yet another slide
+  - Indented content
+
+. . .
+
+- More Content
+
+. . .
+
+- Even More Content
+
+
+
+
+# References
+
+
+## References {.allowframebreaks}
